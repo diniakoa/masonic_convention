@@ -141,19 +141,23 @@
     </div>
 
     <script>
-        const gasLink = "https://script.google.com/macros/s/AKfycbysmgmNo_mHrPqdZ4qChkH-aOql8jhi2xvFZUJe8mBsLbRTjL6dNZ9to9aJ5aBc9zQL/exec";
+        const gasLink = "https://script.google.com/macros/s/AKfycbzCM2suFZotegZUufYogJAJjt7YrThacyKLhmjrStoqXxXynYJUw_rioVZtD5xXZSi2/exec";
 
         window.addEventListener('message', function(event) {
             if (event.data && event.data.action === 'redirect') {
+                
+                if (event.source) {
+                    event.source.postMessage('vercel_ack', '*');
+                }
+
                 const loader = document.getElementById('loader');
                 const iframe = document.getElementById('appFrame');
+                
                 if (loader && iframe) {
-                    // Show loader again during transition
                     loader.style.display = 'flex';
                     loader.style.visibility = 'visible';
                     loader.style.opacity = '1';
                     iframe.style.opacity = '0';
-                    // Let the parent window change the iframe source to bypass Google's block
                     iframe.src = event.data.url;
                 }
             }
