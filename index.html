@@ -141,7 +141,7 @@
     </div>
 
     <script>
-        const gasLink = "https://script.google.com/macros/s/AKfycbwYzNACk3GJ-MqTT8RGyP1YxxwYI7X7Z4zEB2rS-hf_O8l3iXmvr7t5_w5-ln7-mup9/exec";
+        const gasLink = "https://script.google.com/macros/s/AKfycbwq46bRidfsxmcbY2SMAZwFVlZ5Cl3Q5iYJ2tVQ-KNzf-ZfhoMmsgR6vWj0-MpQN3xO/exec";
 
         window.addEventListener('message', function(event) {
             if (event.data && event.data.action === 'redirect') {
@@ -172,7 +172,7 @@
             iframe.src = gasLink;
             iframe.allow = "geolocation; microphone; camera; clipboard-read; clipboard-write";
             
-            iframe.setAttribute('sandbox', 'allow-forms allow-scripts allow-same-origin allow-popups allow-top-navigation allow-downloads allow-popups-to-escape-sandbox');
+            iframe.setAttribute('sandbox', 'allow-forms allow-scripts allow-same-origin allow-popups allow-top-navigation allow-top-navigation-by-user-activation allow-downloads allow-popups-to-escape-sandbox');
             
             iframe.onload = function() {
                 const loader = document.getElementById('loader');
