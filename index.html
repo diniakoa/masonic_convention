@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Convention Portal</title>
+    <link rel="icon" type="image/x-icon" href="favicon.ico">
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --bg-color: #fcfcfc; /* Matched to GAS body background */
+            --text-color: #94a3b8; /* Matched to GAS slate-400 */
+            --primary-accent: #1b1afa; /* GAS Blue */
+            --secondary-accent: #ffd422; /* GAS Yellow */
+            --core-glow: rgba(255, 212, 34, 0.6);
+        }
+
+        /* Dark mode variant adapted to match GAS branding */
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --bg-color: #0f172a; /* Deep slate */
+                --text-color: #64748b;
+                --primary-accent: #1b1afa; 
+                --secondary-accent: #ffd422; 
+                --core-glow: rgba(255, 212, 34, 0.4);
+            }
+        }
+
+        html, body {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            width: 100%;
+            overflow: hidden;
+            background-color: var(--bg-color);
+            font-family: 'Poppins', sans-serif;
+            transition: background-color 0.3s ease;
+        }
+
+        iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+            display: block;
+            opacity: 0;
+            transition: opacity 0.6s ease-in-out;
+        }
+
+        #loader {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: var(--bg-color);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            gap: 24px;
+            z-index: 9999;
+            transition: opacity 0.5s ease-out, visibility 0.5s;
+        }
+
+        /* --- GAS MATCHED LOADER --- */
+        .modern-loader {
+            position: relative;
+            width: 64px;
+            height: 64px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .orbit-outer {
+            position: absolute;
+            inset: 0;
+            border-radius: 50%;
+            border: 4px solid #f1f5f9; /* slate-100 */
+            border-top-color: var(--primary-accent);
+            animation: spin 1s linear infinite;
+        }
+
+        .core {
+            width: 16px;
+            height: 16px;
+            background-color: var(--secondary-accent);
+            border-radius: 50%;
+            animation: pulse-core 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+        }
+
+        /* --- TEXT ANIMATION --- */
+        .text-container {
+            display: flex;
+            align-items: center;
+            color: var(--text-color);
+            font-family: 'Poppins', sans-serif;
+            font-size: 10px;
+            font-weight: 700;
+            letter-spacing: 0.4em;
+            text-transform: uppercase;
+        }
+
+        /* Animated typing dots (...) */
+        .text-container::after {
+            content: '';
+            animation: typing 1.5s steps(4, end) infinite;
+            display: inline-block;
+            width: 16px; /* Keeps layout from shifting */
+            text-align: left;
+        }
+
+        /* Keyframes */
+        @keyframes spin { 
+            0% { transform: rotate(0deg); } 
+            100% { transform: rotate(360deg); } 
+        }
+        
+        @keyframes pulse-core { 
+            0%, 100% { opacity: 1; } 
+            50% { opacity: .3; } 
+        }
+
+        @keyframes typing {
+            0% { content: ''; }
+            25% { content: '.'; }
+            50% { content: '..'; }
+            75% { content: '...'; }
+            100% { content: ''; }
+        }
+    </style>
+</head>
+<body>
+
+    <div id="loader">
+        <div class="modern-loader">
+            <div class="orbit-outer"></div>
+            <div class="core"></div>
+        </div>
+        <div class="text-container" id="loadingText">Initializing</div>
+    </div>
+
+    <script>
+        const gasLink = "https://script.google.com/macros/s/AKfycbywNYAIeJPyWUxgWifYITyPepzxAyVIkpolpIFLQS-C4WQn2QqXZS0in5l3-gOf9TRA/exec";
+        
+        // Detect if the user is on an iOS device (iPhone/iPad)
+        const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+
+        if (isIOS) {
+            document.getElementById('loadingText').innerText = "Authenticating secure session";
+            // Redirect immediately to bypass Apple's strict cross-site iframe cookie blocking
+            window.location.replace(gasLink);
+        } else {
+            const iframe = document.createElement('iframe');
+            iframe.id = 'appFrame';
+            iframe.src = gasLink;
+            iframe.allow = "geolocation; microphone; camera; clipboard-read; clipboard-write";
+            
+            // Allow Google Auth popups to escape the iframe sandbox
+            iframe.setAttribute('sandbox', 'allow-forms allow-scripts allow-same-origin allow-popups allow-top-navigation allow-downloads allow-popups-to-escape-sandbox');
+            
+            iframe.onload = function() {
+                const loader = document.getElementById('loader');
+                
+                // Allow the GAS app inside the iframe to finish mounting its DOM
+                setTimeout(() => {
+                    loader.style.opacity = '0';
+                    iframe.style.opacity = '1'; 
+                    
+                    setTimeout(() => {
+                        loader.style.visibility = 'hidden';
+                        loader.style.display = 'none';
+                    }, 500);
+                }, 800);
+            };
+
+            document.body.appendChild(iframe);
+        }
+    </script>
+
+</body>
+</html>
