@@ -141,7 +141,23 @@
     </div>
 
     <script>
-        const gasLink = "https://script.google.com/macros/s/AKfycbxx9UvtzbpkeP-xvcveR9LqmEqhVZVV_oUtL062gNhz_ZfG6AGso_IPaLUieVJ_IBC5/exec";
+        const gasLink = "https://script.google.com/macros/s/AKfycbyX3ODxhDGTeDcK0bVYBhkTbr6Z3xxCPegPqWGbAxlHiFYsXo5moilcXm2DAGjEbedg/exec";
+
+        window.addEventListener('message', function(event) {
+            if (event.data && event.data.action === 'redirect') {
+                const loader = document.getElementById('loader');
+                const iframe = document.getElementById('appFrame');
+                if (loader && iframe) {
+                    // Show loader again during transition
+                    loader.style.display = 'flex';
+                    loader.style.visibility = 'visible';
+                    loader.style.opacity = '1';
+                    iframe.style.opacity = '0';
+                    // Let the parent window change the iframe source to bypass Google's block
+                    iframe.src = event.data.url;
+                }
+            }
+        });
         
         // Detect if the user is on an iOS device (iPhone/iPad)
         const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
