@@ -141,7 +141,7 @@
     </div>
 
     <script>
-        const gasLink = "https://script.google.com/macros/s/AKfycbyR5UbIoUL2qUtGYeelXea_wD05gIQ21gkiJbk6mvuK_VxTdd-3g61BwPemak6u7tH6/exec";
+        const gasLink = "https://script.google.com/macros/s/AKfycby-bGudYQCNQmgBfhlBKmyx3KqtgrjhoDfEL0S35URMFta5lQaNTLhQ1L3-1XrMwz5h/exec";
 
         const formLink = gasLink + "?page=form";
 
@@ -163,7 +163,7 @@
 
         let isFirstLoad = true;
 
-        frameMain.src = gasLink;
+        frameMain.src = gasLink + "?t=" + Date.now();
 
         frameMain.onload = function() {
             setTimeout(() => {
@@ -178,7 +178,7 @@
 
             if (isFirstLoad) {
                 isFirstLoad = false;
-                setTimeout(() => { frameForm.src = formLink; }, 1500); 
+                setTimeout(() => { frameForm.src = formLink + "&t=" + Date.now(); }, 1500); 
             }
         };
 
@@ -193,15 +193,14 @@
                         frameMain.style.display = 'none';
                         frameForm.style.display = 'block';
                         requestAnimationFrame(() => frameForm.style.opacity = '1');
-                        
-                        setTimeout(() => { frameMain.src = gasLink; }, 1000);
+                        setTimeout(() => { frameMain.src = gasLink + "?t=" + Date.now(); }, 1000);
                     }, 600);
                 }
                 
                 else if (url.includes('page=admin')) {
                     loader.style.display = 'flex'; loader.style.visibility = 'visible'; loader.style.opacity = '1';
                     frameMain.style.opacity = '0'; frameForm.style.display = 'none';
-                    setTimeout(() => { frameMain.src = url; }, 300);
+                    setTimeout(() => { frameMain.src = url + "&t=" + Date.now(); }, 300);
                 }
 
                 else {
@@ -212,13 +211,12 @@
                             frameMain.style.display = 'block';
                             requestAnimationFrame(() => frameMain.style.opacity = '1');
                             
-                            setTimeout(() => { frameForm.src = formLink; }, 1000);
+                            setTimeout(() => { frameForm.src = formLink + "&t=" + Date.now(); }, 1000);
                         }, 600);
                     } else {
-                        
                         loader.style.display = 'flex'; loader.style.visibility = 'visible'; loader.style.opacity = '1';
                         frameMain.style.opacity = '0';
-                        setTimeout(() => { frameMain.src = gasLink; }, 300);
+                        setTimeout(() => { frameMain.src = gasLink + "?t=" + Date.now(); }, 300);
                     }
                 }
             }
