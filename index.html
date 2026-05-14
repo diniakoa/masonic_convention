@@ -141,7 +141,7 @@
     </div>
 
     <script>
-        const gasLink = "https://script.google.com/macros/s/AKfycby-bGudYQCNQmgBfhlBKmyx3KqtgrjhoDfEL0S35URMFta5lQaNTLhQ1L3-1XrMwz5h/exec";
+        const gasLink = "https://script.google.com/macros/s/AKfycbx-NpAZVmj-sm0jr3vDZ0V762EblHcrbY8_hCakqokRr5TGtiEA5xl1iwWIZ7PL3RCJ/exec";
 
         const formLink = gasLink + "?page=form";
 
@@ -184,7 +184,6 @@
 
         window.addEventListener('message', function(event) {
             if (event.data && event.data.action === 'redirect') {
-                if (event.source) event.source.postMessage('vercel_ack', '*');
                 const url = event.data.url;
 
                 if (url.includes('page=form')) {
@@ -193,7 +192,6 @@
                         frameMain.style.display = 'none';
                         frameForm.style.display = 'block';
                         requestAnimationFrame(() => frameForm.style.opacity = '1');
-                        setTimeout(() => { frameMain.src = gasLink + "?t=" + Date.now(); }, 1000);
                     }, 600);
                 }
                 
@@ -210,8 +208,7 @@
                             frameForm.style.display = 'none';
                             frameMain.style.display = 'block';
                             requestAnimationFrame(() => frameMain.style.opacity = '1');
-                            
-                            setTimeout(() => { frameForm.src = formLink + "&t=" + Date.now(); }, 1000);
+                            frameForm.src = formLink + "&t=" + Date.now();
                         }, 600);
                     } else {
                         loader.style.display = 'flex'; loader.style.visibility = 'visible'; loader.style.opacity = '1';
