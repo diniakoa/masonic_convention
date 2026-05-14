@@ -141,7 +141,7 @@
     </div>
 
     <script>
-        const gasLink = "https://script.google.com/macros/s/AKfycbxIt4Gse-N-tmo6uwcGWQSrbCQKQxkobkU0UYShXrVylnXG-ozz6rqlDNM2tghP2nWe/exec";
+        const gasLink = "https://script.google.com/macros/s/AKfycbyR5UbIoUL2qUtGYeelXea_wD05gIQ21gkiJbk6mvuK_VxTdd-3g61BwPemak6u7tH6/exec";
 
         const formLink = gasLink + "?page=form";
 
@@ -149,35 +149,42 @@
 
         const frameMain = document.createElement('iframe');
         frameMain.id = 'frame-main';
-        frameMain.src = gasLink;
         frameMain.allow = "geolocation; microphone; camera; clipboard-read; clipboard-write";
         frameMain.setAttribute('sandbox', 'allow-forms allow-scripts allow-same-origin allow-popups allow-downloads');
 
         const frameForm = document.createElement('iframe');
         frameForm.id = 'frame-form';
-        frameForm.src = formLink;
         frameForm.allow = "geolocation; microphone; camera; clipboard-read; clipboard-write";
         frameForm.setAttribute('sandbox', 'allow-forms allow-scripts allow-same-origin allow-popups allow-downloads');
-        frameForm.style.display = 'none'; // Hidden initially
+        frameForm.style.display = 'none'; 
 
         document.body.appendChild(frameMain);
         document.body.appendChild(frameForm);
 
+        let isFirstLoad = true;
+
+        frameMain.src = gasLink;
+
         frameMain.onload = function() {
             setTimeout(() => {
                 loader.style.opacity = '0';
+                frameMain.style.display = 'block';
                 frameMain.style.opacity = '1'; 
                 setTimeout(() => {
                     loader.style.visibility = 'hidden';
                     loader.style.display = 'none';
                 }, 500);
-            }, 800);
+            }, 300);
+
+            if (isFirstLoad) {
+                isFirstLoad = false;
+                setTimeout(() => { frameForm.src = formLink; }, 1500); 
+            }
         };
 
         window.addEventListener('message', function(event) {
             if (event.data && event.data.action === 'redirect') {
                 if (event.source) event.source.postMessage('vercel_ack', '*');
-
                 const url = event.data.url;
 
                 if (url.includes('page=form')) {
@@ -185,37 +192,34 @@
                     setTimeout(() => {
                         frameMain.style.display = 'none';
                         frameForm.style.display = 'block';
+                        requestAnimationFrame(() => frameForm.style.opacity = '1');
                         
-                        requestAnimationFrame(() => {
-                            frameForm.style.opacity = '1';
-                        });
-                    }, 600); // Waits for fade out
-                }
-                
-                else if (url === gasLink || !url.includes('page=')) {
-                    frameForm.style.opacity = '0';
-                    setTimeout(() => {
-                        frameForm.style.display = 'none';
-                        frameMain.style.display = 'block';
-                        
-                        requestAnimationFrame(() => {
-                            frameMain.style.opacity = '1';
-                        });
-                        
-                        setTimeout(() => { frameForm.src = formLink; }, 1000);
+                        setTimeout(() => { frameMain.src = gasLink; }, 1000);
                     }, 600);
                 }
-
+                
                 else if (url.includes('page=admin')) {
-                    loader.style.display = 'flex';
-                    loader.style.visibility = 'visible';
-                    loader.style.opacity = '1';
-                    
-                    frameMain.style.opacity = '0';
-                    frameForm.style.display = 'none';
-                    
-                    frameMain.src = url;
-                    frameMain.style.display = 'block';
+                    loader.style.display = 'flex'; loader.style.visibility = 'visible'; loader.style.opacity = '1';
+                    frameMain.style.opacity = '0'; frameForm.style.display = 'none';
+                    setTimeout(() => { frameMain.src = url; }, 300);
+                }
+
+                else {
+                    if (frameForm.style.display === 'block') {
+                        frameForm.style.opacity = '0';
+                        setTimeout(() => {
+                            frameForm.style.display = 'none';
+                            frameMain.style.display = 'block';
+                            requestAnimationFrame(() => frameMain.style.opacity = '1');
+                            
+                            setTimeout(() => { frameForm.src = formLink; }, 1000);
+                        }, 600);
+                    } else {
+                        
+                        loader.style.display = 'flex'; loader.style.visibility = 'visible'; loader.style.opacity = '1';
+                        frameMain.style.opacity = '0';
+                        setTimeout(() => { frameMain.src = gasLink; }, 300);
+                    }
                 }
             }
         });
