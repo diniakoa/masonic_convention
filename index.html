@@ -48,49 +48,11 @@
             opacity: 0;
             transition: opacity 0.8s ease-in-out;
         }
-    
-        /* Primary Loader Container */
-        #loader-screen {
-            position: fixed;
-            inset: 0;
-            background-color: #ffffff;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            z-index: 10000;
-            transition: opacity 0.5s ease-out;
-        }
-    
-        /* Spinner Animation */
-        .animate-spin {
-            animation: spin 1s linear infinite;
-        }
-    
-        @keyframes spin {
-            from { transform: rotate(0deg); }
-            to { transform: rotate(360deg); }
-        }
-    
-        /* Pulse Text Animation */
-        .animate-pulse {
-            animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
-        }
-    
-        @keyframes pulse {
-            0%, 100% { opacity: 1; }
-            50% { opacity: .5; }
-        }
+
     </style>
 </head>
 <body>
-
-    <div id="loader-screen">
-        <div class="w-12 h-12 border-4 border-slate-100 border-t-[#1b1afa] rounded-full animate-spin mb-4" 
-             style="width: 3rem; height: 3rem; border-radius: 9999px; border-width: 4px; border-style: solid; border-color: #f1f5f9; border-top-color: #1b1afa;">
-        </div>
-    </div>
-
+    
     <script>
         const gasLink = "https://script.google.com/macros/s/AKfycbx51Lpo0oKkzkzYCDr7wpwX91nsAsKxN5Di_NRcunF2FbHy4Ei_y81rC1sG2HCesj0f/exec";
 
