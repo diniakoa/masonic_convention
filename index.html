@@ -143,6 +143,7 @@
     <script>
         const gasLink = "https://script.google.com/macros/s/AKfycbxIt4Gse-N-tmo6uwcGWQSrbCQKQxkobkU0UYShXrVylnXG-ozz6rqlDNM2tghP2nWe/exec";
 
+        // Listener (Handshake to prevent breakouts)
         window.addEventListener('message', function(event) {
             if (event.data && event.data.action === 'redirect') {
                 
@@ -154,6 +155,7 @@
                 const iframe = document.getElementById('appFrame');
                 
                 if (loader && iframe) {
+                    // Show loader during transition
                     loader.style.display = 'flex';
                     loader.style.visibility = 'visible';
                     loader.style.opacity = '1';
@@ -163,36 +165,27 @@
             }
         });
         
-        // Detect if the user is on an iOS device (iPhone/iPad)
-        const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
-
-        if (isIOS) {
-            document.getElementById('loadingText').innerText = "Authenticating secure session";
-            // Redirect immediately to bypass Apple's strict cross-site iframe cookie blocking
-            window.location.replace(gasLink);
-        } else {
-            const iframe = document.createElement('iframe');
-            iframe.id = 'appFrame';
-            iframe.src = gasLink;
-            iframe.allow = "geolocation; microphone; camera; clipboard-read; clipboard-write";
+        const iframe = document.createElement('iframe');
+        iframe.id = 'appFrame';
+        iframe.src = gasLink;
+        iframe.allow = "geolocation; microphone; camera; clipboard-read; clipboard-write";
+        iframe.setAttribute('sandbox', 'allow-forms allow-scripts allow-same-origin allow-popups allow-downloads');
+        
+        iframe.onload = function() {
+            const loader = document.getElementById('loader');
             
-            iframe.setAttribute('sandbox', 'allow-forms allow-scripts allow-same-origin allow-popups allow-top-navigation allow-top-navigation-by-user-activation allow-downloads allow-popups-to-escape-sandbox');
-            
-            iframe.onload = function() {
-                const loader = document.getElementById('loader');
+            setTimeout(() => {
+                loader.style.opacity = '0';
+                iframe.style.opacity = '1'; 
                 
                 setTimeout(() => {
-                    loader.style.opacity = '0';
-                    iframe.style.opacity = '1'; 
-                    
-                    setTimeout(() => {
-                        loader.style.visibility = 'hidden';
-                        loader.style.display = 'none';
-                    }, 500);
-                }, 800);
-            };
+                    loader.style.visibility = 'hidden';
+                    loader.style.display = 'none';
+                }, 500);
+            }, 800);
+        };
 
-            document.body.appendChild(iframe);
+        document.body.appendChild(iframe);
         }
     </script>
 
