@@ -141,7 +141,7 @@
     </div>
 
     <script>
-        const gasLink = "https://script.google.com/macros/s/AKfycbx-NpAZVmj-sm0jr3vDZ0V762EblHcrbY8_hCakqokRr5TGtiEA5xl1iwWIZ7PL3RCJ/exec";
+        const gasLink = "https://script.google.com/macros/s/AKfycby63vWx4naRaidzzSYu4rq_pgc05g_9v7HsPYnAP067oKuj8YFm4rlAjK8v25rDyBQ/exec";
 
         const formLink = gasLink + "?page=form";
 
@@ -150,12 +150,12 @@
         const frameMain = document.createElement('iframe');
         frameMain.id = 'frame-main';
         frameMain.allow = "geolocation; microphone; camera; clipboard-read; clipboard-write";
-        frameMain.setAttribute('sandbox', 'allow-forms allow-scripts allow-same-origin allow-popups allow-downloads');
+        frameMain.setAttribute('sandbox', 'allow-forms allow-scripts allow-same-origin allow-popups allow-downloads allow-top-navigation-by-user-activation');
 
         const frameForm = document.createElement('iframe');
         frameForm.id = 'frame-form';
         frameForm.allow = "geolocation; microphone; camera; clipboard-read; clipboard-write";
-        frameForm.setAttribute('sandbox', 'allow-forms allow-scripts allow-same-origin allow-popups allow-downloads');
+        frameForm.setAttribute('sandbox', 'allow-forms allow-scripts allow-same-origin allow-popups allow-downloads allow-top-navigation-by-user-activation');
         frameForm.style.display = 'none'; 
 
         document.body.appendChild(frameMain);
@@ -184,6 +184,11 @@
 
         window.addEventListener('message', function(event) {
             if (event.data && event.data.action === 'redirect') {
+
+                if (event.source) {
+                    event.source.postMessage('vercel_ack', '*');
+                }
+                
                 const url = event.data.url;
 
                 if (url.includes('page=form')) {
