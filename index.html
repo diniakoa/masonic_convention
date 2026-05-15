@@ -35,7 +35,7 @@
     </iframe>
 
     <script>
-        const gasLink = "https://script.google.com/macros/s/AKfycbygfPFQAeV1JfNnQfgblAAFrJI5nCUQ09qAruwLqBgqDVj7d_snM86ueQqGEIEX7NMe/exec";
+        const gasLink = "https://script.google.com/macros/s/AKfycbw9z-Psb_sWFOz5LNMtDZ03iXSmpQI-Hva_etKjlaDm0qu0bvwjqJB_bJ7iSU3xkmwN/exec";
         const iframe = document.getElementById('gas-frame');
 
         iframe.src = gasLink + "?t=" + Date.now();
@@ -53,10 +53,13 @@
                 
                 const url = event.data.url;
                 if (url) {
+                    const iframe = document.getElementById('gas-frame');
                     iframe.style.opacity = '0';
+                    
                     setTimeout(() => {
-                        iframe.src = url.includes('?') ? url + "&t=" + Date.now() : url + "?t=" + Date.now();
-                    }, 500);
+                        const cacheBuster = "t=" + Date.now();
+                        iframe.src = url.includes('?') ? url + "&" + cacheBuster : url + "?" + cacheBuster;
+                    }, 400);
                 }
             }
         });
