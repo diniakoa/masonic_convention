@@ -35,7 +35,7 @@
     </iframe>
 
     <script>
-        const gasLink = "https://script.google.com/macros/s/AKfycbwh-kWNvyzRchS322o1dF7r7pkHWkkeNVrLyGqXyt8ndHjA2636B-grPTznvzC68jTg/exec";
+        const gasLink = "https://script.google.com/macros/s/AKfycbw52L1jdHW0KOcwL18X0zQ3wdW5SLceVgRQjP-y9B03mO2dSfLHzkd8gYN0B6MahAKV/exec";
         const iframe = document.getElementById('gas-frame');
 
         iframe.src = gasLink + "?t=" + Date.now();
@@ -45,24 +45,25 @@
         };
 
         window.addEventListener('message', function(event) {
-            if (event.data && event.data.action === 'redirect') {
-                
-                if (event.source) {
-                    event.source.postMessage('vercel_ack', '*');
-                }
-                
-                const url = event.data.url;
-                if (url) {
-                    const iframe = document.getElementById('gas-frame');
-                    iframe.style.opacity = '0';
-                    
-                    setTimeout(() => {
-                        const cacheBuster = "t=" + Date.now();
-                        iframe.src = url.includes('?') ? url + "&" + cacheBuster : url + "?" + cacheBuster;
-                    }, 400);
-                }
+        if (event.data && event.data.action === 'redirect') {
+            const iframe = document.getElementById('gas-frame');
+            
+            if (iframe && iframe.contentWindow) {
+                iframe.contentWindow.postMessage('vercel_ack', '*');
             }
-        });
+            
+            const url = event.data.url;
+            if (url) {
+                iframe.style.opacity = '0';
+                
+                setTimeout(() => {
+                    const cacheBuster = "t=" + Date.now();
+                    iframe.src = url.includes('?') ? url + "&" + cacheBuster : url + "?" + cacheBuster;
+                    
+                }, 400);
+            }
+        }
+    });
     </script>
 
 </body>
