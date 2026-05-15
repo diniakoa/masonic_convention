@@ -6,133 +6,57 @@
     <title>Masonic Convention Portal</title>
     <link rel="icon" type="image/x-icon" href="favicon.ico">
     
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Poppins:wght@300;400;500;600;700&family=Spectral+SC:wght@400;600;700;800&display=swap" rel="stylesheet">
-    
     <style>
-        :root {
-            --bg-color: #fcfcfc;
-            --text-color: #94a3b8;
-            --primary-accent: #1b1afa;
-            --secondary-accent: #ffd422;
-            --core-glow: rgba(255, 212, 34, 0.6);
-        }
-
-        @media (prefers-color-scheme: dark) {
-            :root {
-                --bg-color: #0f172a;
-                --text-color: #64748b;
-                --primary-accent: #1b1afa; 
-                --secondary-accent: #ffd422; 
-                --core-glow: rgba(255, 212, 34, 0.4);
-            }
-        }
-
         html, body {
             margin: 0;
             padding: 0;
             height: 100%;
             width: 100%;
             overflow: hidden;
-            background-color: var(--bg-color);
-            font-family: 'Poppins', sans-serif;
-            transition: background-color 0.3s ease;
+            background-color: #fcfcfc;
         }
 
-         iframe {
+        iframe {
             width: 100%;
             height: 100%;
             border: none;
             display: block;
             opacity: 0;
-            transition: opacity 0.8s ease-in-out;
+            transition: opacity 0.5s ease-in-out;
         }
-
     </style>
 </head>
 <body>
     
+    <iframe 
+        id="gas-frame"
+        allow="geolocation; microphone; camera; clipboard-read; clipboard-write"
+        sandbox="allow-forms allow-scripts allow-same-origin allow-popups allow-downloads allow-top-navigation-by-user-activation">
+    </iframe>
+
     <script>
-        const gasLink = "https://script.google.com/macros/s/AKfycbx51Lpo0oKkzkzYCDr7wpwX91nsAsKxN5Di_NRcunF2FbHy4Ei_y81rC1sG2HCesj0f/exec";
+        const gasLink = "https://script.google.com/macros/s/AKfycbygfPFQAeV1JfNnQfgblAAFrJI5nCUQ09qAruwLqBgqDVj7d_snM86ueQqGEIEX7NMe/exec";
+        const iframe = document.getElementById('gas-frame');
 
-        const formLink = gasLink + "?page=form";
+        iframe.src = gasLink + "?t=" + Date.now();
 
-        const loader = document.getElementById('loader');
-
-        const frameMain = document.createElement('iframe');
-        frameMain.id = 'frame-main';
-        frameMain.allow = "geolocation; microphone; camera; clipboard-read; clipboard-write";
-        frameMain.setAttribute('sandbox', 'allow-forms allow-scripts allow-same-origin allow-popups allow-downloads allow-top-navigation-by-user-activation');
-
-        const frameForm = document.createElement('iframe');
-        frameForm.id = 'frame-form';
-        frameForm.allow = "geolocation; microphone; camera; clipboard-read; clipboard-write";
-        frameForm.setAttribute('sandbox', 'allow-forms allow-scripts allow-same-origin allow-popups allow-downloads allow-top-navigation-by-user-activation');
-        frameForm.style.display = 'none'; 
-
-        document.body.appendChild(frameMain);
-        document.body.appendChild(frameForm);
-
-        let isFirstLoad = true;
-
-        frameMain.src = gasLink + "?t=" + Date.now();
-
-        frameMain.onload = function() {
-            setTimeout(() => {
-                loader.style.opacity = '0';
-                frameMain.style.display = 'block';
-                frameMain.style.opacity = '1'; 
-                setTimeout(() => {
-                    loader.style.visibility = 'hidden';
-                    loader.style.display = 'none';
-                }, 500);
-            }, 300);
-
-            if (isFirstLoad) {
-                isFirstLoad = false;
-                setTimeout(() => { frameForm.src = formLink + "&t=" + Date.now(); }, 1500); 
-            }
+        iframe.onload = function() {
+            iframe.style.opacity = '1';
         };
 
         window.addEventListener('message', function(event) {
             if (event.data && event.data.action === 'redirect') {
-
+                
                 if (event.source) {
                     event.source.postMessage('vercel_ack', '*');
                 }
                 
                 const url = event.data.url;
-
-                if (url.includes('page=form')) {
-                    frameMain.style.opacity = '0';
+                if (url) {
+                    iframe.style.opacity = '0';
                     setTimeout(() => {
-                        frameMain.style.display = 'none';
-                        frameForm.style.display = 'block';
-                        requestAnimationFrame(() => frameForm.style.opacity = '1');
-                    }, 600);
-                }
-                
-                else if (url.includes('page=admin')) {
-                    loader.style.display = 'flex'; loader.style.visibility = 'visible'; loader.style.opacity = '1';
-                    frameMain.style.opacity = '0'; frameForm.style.display = 'none';
-                    setTimeout(() => { frameMain.src = url + "&t=" + Date.now(); }, 300);
-                }
-
-                else {
-                    if (frameForm.style.display === 'block') {
-                        frameForm.style.opacity = '0';
-                        setTimeout(() => {
-                            frameForm.style.display = 'none';
-                            frameMain.style.display = 'block';
-                            requestAnimationFrame(() => frameMain.style.opacity = '1');
-                            frameForm.src = formLink + "&t=" + Date.now();
-                        }, 600);
-                    } else {
-                        loader.style.display = 'flex'; loader.style.visibility = 'visible'; loader.style.opacity = '1';
-                        frameMain.style.opacity = '0';
-                        setTimeout(() => { frameMain.src = gasLink + "?t=" + Date.now(); }, 300);
-                    }
+                        iframe.src = url.includes('?') ? url + "&t=" + Date.now() : url + "?t=" + Date.now();
+                    }, 500);
                 }
             }
         });
