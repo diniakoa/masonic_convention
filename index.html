@@ -29,16 +29,15 @@
 <body>
     
     <iframe 
-        id="gas-frame"
+        id="app-frame"
         allow="geolocation; microphone; camera; clipboard-read; clipboard-write"
         sandbox="allow-forms allow-scripts allow-same-origin allow-popups allow-downloads allow-top-navigation-by-user-activation">
     </iframe>
 
     <script>
-        const gasLink = "https://script.google.com/macros/s/AKfycbzE3uybzgzuyQF1B8FDH20wAIOd3p89lz8a-6dlOgSeMrMzQUs49ejMlvRGqSCd2MLa/exec";
-        const iframe = document.getElementById('gas-frame');
+        const iframe = document.getElementById('app-frame');
 
-        iframe.src = gasLink + "?t=" + Date.now();
+        iframe.src = "/gateway?t=" + Date.now();
 
         iframe.onload = function() {
             iframe.style.opacity = '1';
@@ -46,7 +45,7 @@
 
        window.addEventListener('message', function(event) {
         if (event.data && event.data.action === 'redirect') {
-            const iframe = document.getElementById('gas-frame');
+            const iframe = document.getElementById('app-frame');
             
             if (event.source) {
                 event.source.postMessage('vercel_ack', '*');
